@@ -1,8 +1,9 @@
 import express from "express";
-import { IndexHome } from "../controllers/OpenCTR.ts";
+import { OPEN } from "../controllers/OpenCTR.ts";
 
+// ROUTE:  http://localhost:9000/api/chat
 export const openRT: express.Router = express.Router();
-    openRT.get("/", IndexHome);
+    openRT.post("/chat", OPEN.Chat);
 
 
 
