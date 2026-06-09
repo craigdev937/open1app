@@ -1,7 +1,6 @@
 import express from "express";
-import { client } from "../middleware/openai.ts";
 import { CSchema } from "../validation/Schema.ts";
-import { conRepo } from "../data/ConREP.ts";
+import { CService } from "../service/ChatService.ts";
 
 class OpenAI {
     Chat: express.Handler = async (req, res, next) => {
@@ -12,18 +11,10 @@ class OpenAI {
                 return;
             };
             const { prompt, convId } = req.body;
-            const response = await client.responses.create({
-                model: "gpt-5.4-nano-2026-03-17",
-                input: prompt,
-                temperature: 0.2,
-                max_output_tokens: 100,
-                previous_response_id: conRepo.getLastResID(convId)
-            });
-            conRepo.setLastResID(convId, response.id);
-            
+            const response = await CService.sendMessage(prompt, convId);            
             return res
                 .status(201)
-                .json({ message: response.output_text });
+                .json({ message: response.message });
         } catch (error) {
             res
                 .status(500)
