@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import { ChatBot } from "../components/chat/ChatBot";
 const URL = "http://localhost:9000/api";
 
 export const App = () => {
@@ -14,7 +15,7 @@ export const App = () => {
     
     return (
         <React.Fragment>
-            <h1>{message}</h1>
+            <ChatBot />
         </React.Fragment>
     );
 };
