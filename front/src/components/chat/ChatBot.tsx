@@ -46,11 +46,11 @@ export const ChatBot = () => {
                 {messages.map((msg, index) => (
                     <p 
                         key={index}
-                        className={` ${
+                        className={
                             msg.role === "user"
-                            ? "blue"
-                            : "white"
-                        }`}
+                            ? "msg__user"
+                            : "msg__bot"
+                        }
                         >{msg.content}
                     </p>
                 ))}

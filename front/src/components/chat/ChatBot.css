@@ -52,11 +52,22 @@
 
 .msg__user {
     background-color: var(--blue);
-    color: var(--white);
+    color: var(--black);
     padding: 0.75rem 1rem;
     border-radius: 8px;
     margin-bottom: 0.5rem;
-    align-sel
+    align-self: flex-end;
+    max-width: 100%;
+}
+
+.msg__bot {
+    background-color: var(--pink);
+    color: var(--black);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    align-self: flex-start;
+    max-width: 100%;
 }
 
 @container chat (max-width: 500px) {
