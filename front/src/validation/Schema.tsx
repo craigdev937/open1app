@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 export const CSchema = z.object({
-    convId: z.uuid(),
     prompt: z.string()
         .trim()
         .min(1, "A Prompt is Required!")

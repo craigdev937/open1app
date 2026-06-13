@@ -27,6 +27,10 @@ class OpenAI {
             next(error);
         }
     };
+
+    FetchAll: express.Handler = async (req, res, next) => {
+        
+    };
 };
 
 export const OPEN: OpenAI = new OpenAI();

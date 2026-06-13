@@ -50,6 +50,15 @@
     background: var(--purple);
 }
 
+.msg__user {
+    background-color: var(--blue);
+    color: var(--white);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    align-sel
+}
+
 @container chat (max-width: 500px) {
     .chat__area {
         padding: 0.5rem;
