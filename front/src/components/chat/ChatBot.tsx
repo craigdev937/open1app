@@ -15,10 +15,12 @@ export const ChatBot = () => {
         });
 
     const onSubmit = async ({ prompt }: IData): Promise<IData> => {
-        setMessages((prev) => 
-            [...prev, { content: prompt, role: "user" }]);
+        setMessages((prev) => [
+            ...prev, 
+            { content: prompt, role: "user" }
+        ]);
         reset();
-        const res = await fetch(URL, {
+        const res: Response = await fetch(URL, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -28,7 +30,10 @@ export const ChatBot = () => {
         });
         if (!res.ok) throw new Error(res.statusText);
         const data = await res.json();
-        setMessages((prev) => [...prev, { content: data.message, role: "bot" }]);
+        setMessages((prev) => [
+            ...prev, 
+            { content: data.message, role: "bot" }
+        ]);
         return data;
     };
 
@@ -42,7 +47,7 @@ export const ChatBot = () => {
 
     return (
         <section className="chat__container">
-            <aside>
+            <aside className="message__cont">
                 {messages.map((msg, index) => (
                     <p 
                         key={index}
