@@ -2,12 +2,15 @@ import React from "react";
 import "./ChatBot.css";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import ReactMarkdown from "react-markdown";
 import { CSchema } from "../../validation/Schema";
 import { IData, IMsg } from "../../models/Interfaces";
 const URL = "http://localhost:9000/api/chat";
 
 export const ChatBot = () => {
     const [messages, setMessages] = React.useState<IMsg[]>([]);
+    const [isTy, setIsTy] = React.useState(false);
+    
     const convId = React.useRef(crypto.randomUUID());
     const { register, handleSubmit, reset, 
         formState } = useForm<IData>({
@@ -19,6 +22,7 @@ export const ChatBot = () => {
             ...prev, 
             { content: prompt, role: "user" }
         ]);
+        setIsTy(true);
         reset();
         const res: Response = await fetch(URL, {
             method: "POST",
@@ -34,6 +38,7 @@ export const ChatBot = () => {
             ...prev, 
             { content: data.message, role: "bot" }
         ]);
+        setIsTy(false);
         return data;
     };
 
@@ -56,9 +61,19 @@ export const ChatBot = () => {
                             ? "msg__user"
                             : "msg__bot"
                         }
-                        >{msg.content}
+                        >
+                            <ReactMarkdown>
+                                {msg.content}
+                            </ReactMarkdown>
                     </p>
                 ))}
+                {isTy && (
+                    <div className="msg__dot">
+                        <span />
+                        <span />
+                        <span />
+                    </div>
+                )}
             </aside>
             <form 
                 className="chat__area"
