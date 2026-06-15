@@ -10,36 +10,60 @@ const URL = "http://localhost:9000/api/chat";
 export const ChatBot = () => {
     const [messages, setMessages] = React.useState<IMsg[]>([]);
     const [isTy, setIsTy] = React.useState(false);
-    
+    const [error, setError] = React.useState("");
+    const lastMesRef = React.useRef<HTMLElement | null>(null);
     const convId = React.useRef(crypto.randomUUID());
     const { register, handleSubmit, reset, 
         formState } = useForm<IData>({
             resolver: zodResolver(CSchema)
         });
 
-    const onSubmit = async ({ prompt }: IData): Promise<IData> => {
-        setMessages((prev) => [
-            ...prev, 
-            { content: prompt, role: "user" }
-        ]);
-        setIsTy(true);
-        reset();
-        const res: Response = await fetch(URL, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                prompt: prompt,
-                convId: convId.current
-            }),
+    React.useEffect(() => {
+        lastMesRef.current?.scrollIntoView({
+            behavior: "smooth"
         });
-        if (!res.ok) throw new Error(res.statusText);
-        const data = await res.json();
-        setMessages((prev) => [
-            ...prev, 
-            { content: data.message, role: "bot" }
-        ]);
-        setIsTy(false);
-        return data;
+    }, [messages]);
+
+    const onSubmit = async ({ prompt }: IData) => {
+        try {
+            setMessages((prev) => [
+                ...prev, 
+                { content: prompt, role: "user" }
+            ]);
+            setIsTy(true);
+            setError("");
+            reset({ prompt: "" });
+            const res: Response = await fetch(URL, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    prompt: prompt,
+                    convId: convId.current
+                }),
+            });
+            if (!res.ok) throw new Error(res.statusText);
+            const data = await res.json();
+            setMessages((prev) => [
+                ...prev, 
+                { content: data.message, role: "bot" }
+            ]);
+            setIsTy(false);
+            return data;
+        } catch (error) {
+            console.log(error);
+            setError("There's a problem, try again!");
+        } finally {
+            setIsTy(false);
+        }
+    };
+
+    const onCopyMsg = 
+    (event: React.ClipboardEvent) => {
+        const selection = window.getSelection()?.toString().trim();
+        if (selection) {
+            event.preventDefault();
+            event.clipboardData.setData("text/plain", selection)
+        }
     };
 
     const onKeyDown = 
@@ -54,18 +78,20 @@ export const ChatBot = () => {
         <section className="chat__container">
             <aside className="message__cont">
                 {messages.map((msg, index) => (
-                    <p 
+                    <aside 
                         key={index}
                         className={
                             msg.role === "user"
                             ? "msg__user"
                             : "msg__bot"
                         }
+                        onCopy={onCopyMsg}
+                        ref={lastMesRef}
                         >
                             <ReactMarkdown>
                                 {msg.content}
                             </ReactMarkdown>
-                    </p>
+                    </aside>
                 ))}
                 {isTy && (
                     <div className="msg__dot">
@@ -74,6 +100,7 @@ export const ChatBot = () => {
                         <span />
                     </div>
                 )}
+                {error && <h2 className="msg__err">{error}</h2>}
             </aside>
             <form 
                 className="chat__area"
@@ -81,6 +108,7 @@ export const ChatBot = () => {
                 onKeyDown={onKeyDown}
             >
                 <textarea 
+                    autoFocus
                     className="chat__text" 
                     placeholder="Ask anything..."
                     maxLength={1000}
