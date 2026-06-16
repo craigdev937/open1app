@@ -21,7 +21,7 @@ export const ChatBot = () => {
             setIsTy(true);
             setError("");
             
-            const res: Response = await fetch(URL, {
+            const res = await fetch(URL, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
