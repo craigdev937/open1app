@@ -8,5 +8,13 @@ export interface IMsg {
     role: "user" | "bot"
 };
 
+export interface MES {
+    messages: IMsg[]
+};
+
+export interface ISub {
+    onSubmit: (data: IData) => void
+};
+
 
 
